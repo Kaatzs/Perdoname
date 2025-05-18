@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Me perdonas?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        /* Secciones izquierda y derecha */
+        .left-section, .right-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            min-height: 50vh;
+        }
+
+        .left-section {
+            background-color: white;
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .right-section {
+            background-color: #96e6b3;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Contenido */
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .right-section .title {
+            color: white;
+        }
+
+        .text {
+            font-size: 1.2rem;
+        }
+
+        /* Botones */
+        .buttons-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            background-color: white;
+            color: #96e6b3;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Mensajes */
+        .messages-container {
+            margin-top: 1rem;
+            max-height: 15rem;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .message {
+            background-color: white;
+            color: #96e6b3;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: messageAppear 0.3s ease-out;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Imagen resultado */
+        .result-container {
+            text-align: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-text {
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+            
+            .left-section, .right-section {
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección izquierda -->
+        <div class="left-section">
+            <h1 class="title">CARTA DE PERDON</h1>
+            <p class="text">si te he fallado te pido perdon de la unica forma que se abriendo las puertas de mi corazon para cuando decidas volver.
+                coloco todo esfuerzo y dedicacion para que me perdone lina.
+            </p>
+        </div>
+        
+        <!-- Sección derecha -->
+        <div class="right-section">
+            <div id="question-container">
+                <h1 class="title">¿Me perdonas?</h1>
+                <div class="buttons-container">
+                    <button class="btn" id="yes-btn">Sí</button>
+                    <button class="btn" id="no-btn">No</button>
+                </div>
+            </div>
+            
+            <div id="result-container" class="result-container" style="display: none;">
+                <img src="imagen.jpg" alt="Imagen especial" class="result-image">
+                <p class="result-text">kis</p>
+            </div>
+            
+            <div class="messages-container" id="messages-container"></div>
+        </div>
+    </div>
+
+    <!-- Audio (oculto) -->
+    <audio id="background-music" controls loop autoplay>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Mensajes para el botón "No"
+        const messages = [
+            "¿Segura?",
+            "¿Realmente segura?",
+            "¿Estás completamente segura?",
+            "Piénsalo otra vez",
+            "¿Última oportunidad?",
+            "¿De verdad no?",
+            "Vas a arrepentirte",
+            "Por favor di que sí",
+            "Di que sí",
+            "No seas así",
+        ];
+
+        let noCount = 0;
+        const messagesContainer = document.getElementById('messages-container');
+        const questionContainer = document.getElementById('question-container');
+        const resultContainer = document.getElementById('result-container');
+        const audio = document.getElementById('background-music');
+        audio.volume = 0.5; // Volumen al 50%
+
+        // Reproducir música
+        function playMusic() {
+            audio.play().catch(error => {
+                console.log("Reproducción automática bloqueada por el navegador", error);
+            });
+        }
+
+        // Intentar reproducir música automáticamente
+        playMusic();
+
+        // Reproducir música cuando el usuario interactúa con la página
+        document.addEventListener('click', function() {
+            playMusic();
+        }, { once: true });
+
+        document.addEventListener('touchstart', function() {
+            playMusic();
+        }, { once: true });
+
+        // Botón "No"
+        document.getElementById('no-btn').addEventListener('click', function() {
+            const message = messages[Math.min(noCount, messages.length - 1)];
+            
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.textContent = message;
+            
+            messagesContainer.appendChild(messageElement);
+            noCount++;
+        });
+
+        // Botón "Sí"
+        document.getElementById('yes-btn').addEventListener('click', function() {
+            questionContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
